@@ -34,6 +34,8 @@ MainWindow(QWidget* parent) :
     node n2 = ui_.graphView->addNode(QSize(60, 50));
     node n3 = ui_.graphView->addNode(QSize(60, 50));
     node n4 = ui_.graphView->addNode(QSize(60, 50));
+    node n5 = ui_.graphView->addNode(QSize(60, 50));
+    node n6 = ui_.graphView->addNode(QSize(60, 50));
 
     ui_.graphView->addEdge(n1, n3);
     ui_.graphView->addEdge(n3, n4);
@@ -41,6 +43,9 @@ MainWindow(QWidget* parent) :
     ui_.graphView->addEdge(n2, n4);
     ui_.graphView->addEdge(n1, n2);
     ui_.graphView->addEdge(n1, n4);
+    ui_.graphView->addEdge(n1, n6);
+    ui_.graphView->addEdge(n5, n6);
+    ui_.graphView->addEdge(n2, n5);
 
     ui_.graphView->layout();
 

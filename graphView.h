@@ -2,6 +2,7 @@
 #define _GRAPH_VIEW_H_
 
 #include <QGraphicsView>
+#include <QPolygonF>
 #include <QVector>
 
 #include <ogdf/basic/Graph.h>
@@ -11,6 +12,7 @@
 
 class QSize;
 class QGraphicsScene;
+class QPointF;
 
 class GraphView : public QGraphicsView
 {
@@ -22,6 +24,10 @@ public:
     //ogdf::node addNode(const QSize& size, const ogdf::node& n);
     ogdf::node addNode(const QSize& size);
     void addEdge(const ogdf::node& source, const ogdf::node& target);
+
+    void drawArrow(const QPointF& start, const QPointF& end, const QColor& color);
+
+    QPolygonF createArrow(const QPointF& start, const QPointF& end);
 
     void layout();
 

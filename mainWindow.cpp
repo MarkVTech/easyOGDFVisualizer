@@ -3,7 +3,6 @@
 #include <QLineF>
 #include <QPointF>
 #include <QRectF>
-#include <QPainterPath>
 #include <QGraphicsRectItem>
 
 #include <ogdf/basic/Graph.h>

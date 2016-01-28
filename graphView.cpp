@@ -7,6 +7,8 @@
 #include <QGraphicsEllipseItem>
 #include <QGraphicsSimpleTextItem>
 #include <QString>
+#include <QLineF>
+#include <QPolygonF>
 #include <QDebug>
 
 #include <ogdf/basic/Graph.h>
@@ -29,6 +31,8 @@ GraphView::GraphView(QWidget* parent) :
     scene_->setBackgroundBrush(QBrush(QColor("black")));
 
     setScene(scene_);
+
+    setRenderHint(QPainter::Antialiasing);
 
 }
 
@@ -112,8 +116,26 @@ void GraphView::layout()
 
             scene_->addPath(path, QPen(QColor("green")));
 
-            List<DPoint>::iterator endPoint = points.get(points.size() - 1);
+            List<DPoint>::iterator arrowStartPoint =
+                    points.get(points.size() - 2);
+            List<DPoint>::iterator arrowEndPoint =
+                points.get(points.size() - 1);
+
+            //QPolygonF arrow = createArrow(
+                    //QPointF((*arrowStartPoint).m_x, (*arrowStartPoint).m_y),
+                    //QPointF((*arrowEndPoint).m_x, (*arrowEndPoint).m_y));
     
+
+            //path.addPolygon(arrow);
+            drawArrow(
+                QPointF((*arrowStartPoint).m_x, (*arrowStartPoint).m_y),
+                QPointF((*arrowEndPoint).m_x, (*arrowEndPoint).m_y),
+                QColor("green")
+            );
+            
+            //scene_->addPath(path, QPen(QColor("green")));
+
+            /*
             QRectF epr(
                (*endPoint).m_x-3,
                (*endPoint).m_y-3,
@@ -121,8 +143,65 @@ void GraphView::layout()
 
             scene_->addEllipse(epr, QPen(QColor("green")),
                     QBrush(QColor("green")));
+            */
 
         }
     }
 
+}
+
+ QPolygonF GraphView::
+ createArrow(const QPointF& start, const QPointF& end)
+{
+    qreal Pi = 3.14;
+    qreal arrowSize = 10;
+
+    QPolygonF arrowHead;
+
+    QLineF line(end, start);
+
+    double angle = ::acos(line.dx() / line.length());
+
+    if ( line.dy() >= 0 )
+        angle = (Pi * 2) - angle;
+
+    QPointF arrowP1 = line.p1() + QPointF(sin(angle+Pi/3)*arrowSize,
+            cos(angle+Pi/3)*arrowSize);
+    QPointF arrowP2 = line.p1() + QPointF(sin(angle+Pi-Pi/3)*arrowSize,
+            cos(angle+Pi-Pi/3)*arrowSize);
+
+
+    arrowHead.clear();
+    arrowHead << line.p1() << arrowP1 << arrowP2;
+
+    return arrowHead;
+}
+
+void GraphView::
+drawArrow(const QPointF& start, const QPointF& end, const QColor& color)
+{
+    qreal Pi = 3.14;
+    qreal arrowSize = 10;
+
+    QPolygonF arrowHead;
+
+    QLineF line(end, start);
+
+    double angle = ::acos(line.dx() / line.length());
+
+    if ( line.dy() >= 0 )
+        angle = (Pi * 2) - angle;
+
+    QPointF arrowP1 = line.p1() + QPointF(sin(angle+Pi/3)*arrowSize,
+            cos(angle+Pi/3)*arrowSize);
+    QPointF arrowP2 = line.p1() + QPointF(sin(angle+Pi-Pi/3)*arrowSize,
+            cos(angle+Pi-Pi/3)*arrowSize);
+
+
+    arrowHead.clear();
+    arrowHead << line.p1() << arrowP1 << arrowP2;
+
+    scene_->addPolygon(arrowHead, QPen(color), QBrush(color));
+
+    scene_->addLine(line, QPen(color));
 }
